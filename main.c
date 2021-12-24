@@ -208,7 +208,7 @@ Point point_scalar_product(double k, Point p1)
   return create_point(k * p1.x, k * p1.y);
 }
 
-Point point_lt(double **M, Point p1)
+Point point_lt(double M[2][2], Point p1)
 {
   return create_point(M[0][0] * p1.x + M[0][1] * p1.y,
                       M[1][0] * p1.x + M[1][1] * p1.y);
@@ -257,6 +257,20 @@ void koch_curve(Image *image, Point p1, Point p2, int limit, int color)
 
 void region_fill(Image *image, Point p, int original_color, int new_color)
 {
+  if (get_pixel(image, p) == new_color)
+  {
+    return;
+  }
+  if (get_pixel(image, p) != original_color)
+  {
+    return;
+  }
+  set_pixel(image, p, new_color);
+
+  region_fill(image, point_sum(p, create_point(1, 0)), original_color, new_color);
+  region_fill(image, point_sum(p, create_point(0, 1)), original_color, new_color);
+  region_fill(image, point_sum(p, create_point(0, -1)), original_color, new_color);
+  region_fill(image, point_sum(p, create_point(-1, 0)), original_color, new_color);
 }
 
 // funcao main que implementa o programa principal. Precisa ser completada para
@@ -306,10 +320,21 @@ int main(int argc, char **argv)
       fscanf(in, "%d %d %d %d", &p1.x, &p1.y, &p2.x, &p2.y);
       draw_line(img, p1, p2, color);
     }
+    else if (strcmp(command, KOCH_CURVE) == 0)
+    {
+      int limiar;
+      fscanf(in, "%d %d %d %d %d", &p1.x, &p1.y, &p2.x, &p2.y, &limiar);
+      koch_curve(img, p1, p2, limiar, color);
+    }
+    else if (strcmp(command, REGION_FILL) == 0)
+    {
+      fscanf(in, "%d %d", &p1.x, &p1.y);
+      region_fill(img, p1, background_color, color);
+    }
     else
     {
 
-      printf("Comando desconhecido: '%s'\n", command);
+      printf("comando desconhecido: %s\n", command);
     }
   }
 
