@@ -238,11 +238,14 @@ void koch_curve(Image *image, Point p1, Point p2, int limit, int color)
   Point A = point_sum(point_scalar_product(2.0 / 3.0, p1), point_scalar_product(1.0 / 3.0, p2));
   Point C = point_sum(point_scalar_product(1.0 / 3.0, p1), point_scalar_product(2.0 / 3.0, p2));
 
+  // Cria o vetor entre p1 e p2
   Point V = point_sub(p2, p1);
   double k = 1.0 / sqrt(12.0);
+  // Matriz de transformacao linear, rotacionando o vetor em 30 graus e diminuindo o valor dele
   double M[2][2] = {{0.5, k}, {-k, 0.5}};
+  // Aplicando a transformacao linear
   Point V1 = point_lt(M, V);
-
+  // somando o vetor ao ponto p1 para ter o ponto B
   Point B = point_sum(p1, V1);
 
   koch_curve(image, p1, A, limit, color);
