@@ -190,9 +190,7 @@ void draw_line(Image *image, Point p1, Point p2, int color)
 
 Point point_sum(Point p1, Point p2)
 {
-  Point p;
-  p.x = p1.x + p2.x;
-  p.y = p1.y + p2.y;
+  Point p = create_point(p1.x + p2.x, p1.y + p2.y);
   return p;
 }
 
@@ -261,20 +259,16 @@ void koch_curve(Image *image, Point p1, Point p2, int limit, int color)
 
 void region_fill(Image *image, Point p, int original_color, int new_color)
 {
-  if (get_pixel(image, p) == new_color)
+  if (get_pixel(image, p) == original_color)
   {
-    return;
-  }
-  if (get_pixel(image, p) != original_color)
-  {
-    return;
-  }
-  set_pixel(image, p, new_color);
+    set_pixel(image, p, new_color);
 
-  region_fill(image, point_sum(p, create_point(1, 0)), original_color, new_color);
-  region_fill(image, point_sum(p, create_point(0, 1)), original_color, new_color);
-  region_fill(image, point_sum(p, create_point(0, -1)), original_color, new_color);
-  region_fill(image, point_sum(p, create_point(-1, 0)), original_color, new_color);
+    region_fill(image, point_sum(p, create_point(1, 0)), original_color, new_color);
+    region_fill(image, point_sum(p, create_point(0, 1)), original_color, new_color);
+    region_fill(image, point_sum(p, create_point(0, -1)), original_color, new_color);
+    region_fill(image, point_sum(p, create_point(-1, 0)), original_color, new_color);
+  }
+  return;
 }
 
 // funcao main que implementa o programa principal. Precisa ser completada para
